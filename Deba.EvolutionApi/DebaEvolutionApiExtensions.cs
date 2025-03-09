@@ -15,7 +15,7 @@ namespace Deba.EvolutionApi
 
             services.AddTransient<IEvolutionApiService, EvolutionApiService>();
 
-            services.AddHttpClient<EvolutionApiService>(httpClient =>
+            services.AddHttpClient<IEvolutionApiService, EvolutionApiService>(httpClient =>
             {
                 httpClient.BaseAddress = new Uri(options.ApiUrl ?? string.Empty);
                 httpClient.DefaultRequestHeaders.Add("ApiKey", options.ApiKey ?? string.Empty);
