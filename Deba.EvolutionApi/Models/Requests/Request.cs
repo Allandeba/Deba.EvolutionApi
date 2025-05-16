@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+namespace Deba.EvolutionApi.Models.Requests;
 
-namespace Deba.EvolutionApi.Models.Requests
+public class Request
 {
-    public class Request
-    {
-        
-    }
+    
 }
