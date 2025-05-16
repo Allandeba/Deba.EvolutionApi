@@ -1,7 +1,9 @@
+using Deba.EvolutionApi.Models.Requests.CreateInstance;
 using Deba.EvolutionApi.Models.Requests.FetchInstances;
 using Deba.EvolutionApi.Models.Requests.SendText;
 using Deba.EvolutionApi.Models.Responses;
 using Deba.EvolutionApi.Models.Responses.ConnectionState;
+using Deba.EvolutionApi.Models.Responses.CreateInstance;
 using Deba.EvolutionApi.Models.Responses.FetchInstances;
 using Deba.EvolutionApi.Models.Responses.SendText;
 
@@ -12,4 +14,5 @@ public interface IEvolutionApiService
     Task<Response<SendTextResponse?>> SendTextAsync(string instanceName, SendTextRequest request);
     Task<Response<ConnectionStateResponse?>> CheckConnectionStateAsync(ConnectionStateRequest request);
     Task<Response<FetchInstancesResponse?>> FetchInstancesAsync(FetchInstancesRequest request);
+    Task<Response<CreateInstanceResponse?>> CreateInstanceAsync(CreateInstanceRequest request);
 }

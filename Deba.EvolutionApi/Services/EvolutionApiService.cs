@@ -1,9 +1,11 @@
 using System.Net.Http.Json;
 using Deba.EvolutionApi.Interfaces;
+using Deba.EvolutionApi.Models.Requests.CreateInstance;
 using Deba.EvolutionApi.Models.Requests.FetchInstances;
 using Deba.EvolutionApi.Models.Requests.SendText;
 using Deba.EvolutionApi.Models.Responses;
 using Deba.EvolutionApi.Models.Responses.ConnectionState;
+using Deba.EvolutionApi.Models.Responses.CreateInstance;
 using Deba.EvolutionApi.Models.Responses.FetchInstances;
 using Deba.EvolutionApi.Models.Responses.SendText;
 
@@ -14,6 +16,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
     private static string _sendTextPath = "message/sendText/{0}";
     private static string _connectionStatePath = "instance/connectionState/{0}";
     private static string _fetchInstancesPath = "instance/fetchInstances{0}";
+    private static string _createInstancePath = "instance/create";
 
     public async Task<Response<SendTextResponse?>> SendTextAsync(string instanceName, SendTextRequest request)
     {
@@ -74,6 +77,22 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
         catch (Exception ex)
         {
             return new Response<FetchInstancesResponse?>(null, 500, $"Erro não esperado ao recuperar instancia(s): {ex.Message}", ex.InnerException?.Message);
+        }
+    }
+
+    public async Task<Response<CreateInstanceResponse?>> CreateInstanceAsync(CreateInstanceRequest request)
+    {
+        try
+        {
+            var response = await client.PostAsJsonAsync(_createInstancePath, request);
+
+            return response.IsSuccessStatusCode
+                    ? new Response<CreateInstanceResponse?> { Data = await response.Content.ReadFromJsonAsync<CreateInstanceResponse>() }
+                    : new Response<CreateInstanceResponse?>(null, 404, "Não foi possível criar instancia", await response.Content.ReadAsStringAsync());
+        }
+        catch (Exception ex)
+        {
+            return new Response<CreateInstanceResponse?>(null, 500, $"Erro não esperado criar instancia: {ex.Message}", ex.InnerException?.Message);
         }
     }
 }
