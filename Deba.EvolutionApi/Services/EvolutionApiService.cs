@@ -69,11 +69,11 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
 
             return response.IsSuccessStatusCode
                     ? new Response<FetchInstancesResponse?> { Data = await response.Content.ReadFromJsonAsync<FetchInstancesResponse>() }
-                    : new Response<FetchInstancesResponse?>(null, 404, "Não foi possível enviar a mensagem", await response.Content.ReadAsStringAsync());
+                    : new Response<FetchInstancesResponse?>(null, 404, "Não foi possível recuperar instancia(s)", await response.Content.ReadAsStringAsync());
         }
         catch (Exception ex)
         {
-            return new Response<FetchInstancesResponse?>(null, 500, $"Erro não esperado ao enviar a mensagem: {ex.Message}", ex.InnerException?.Message);
+            return new Response<FetchInstancesResponse?>(null, 500, $"Erro não esperado ao recuperar instancia(s): {ex.Message}", ex.InnerException?.Message);
         }
     }
 }
