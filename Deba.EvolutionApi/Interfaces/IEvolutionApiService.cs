@@ -15,7 +15,7 @@ namespace Deba.EvolutionApi.Interfaces;
 
 public interface IEvolutionApiService
 {
-    Task<Response<SendTextResponse?>> SendTextAsync(string instanceName, SendTextRequest request);
+    Task<Response<SendTextResponse?>> SendTextAsync(SendTextRequest request);
     Task<Response<ConnectionStateResponse?>> CheckConnectionStateAsync(ConnectionStateRequest request);
     Task<Response<FetchInstancesResponse?>> FetchInstancesAsync(FetchInstancesRequest request);
     Task<Response<CreateInstanceResponse?>> CreateInstanceAsync(CreateInstanceRequest request);

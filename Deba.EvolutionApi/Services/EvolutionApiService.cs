@@ -24,11 +24,11 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
     private static string _connectInstancePath = "instance/connect/{0}";
     private static string _logoutInstancePath = "/instance/logout/{0}";
 
-    public async Task<Response<SendTextResponse?>> SendTextAsync(string instanceName, SendTextRequest request)
+    public async Task<Response<SendTextResponse?>> SendTextAsync(SendTextRequest request)
     {
         try
         {
-            var path = string.Format(_sendTextPath, instanceName);
+            var path = string.Format(_sendTextPath, request.InstanceName);
             var response = await client.PostAsJsonAsync(path, request);
 
             return response.IsSuccessStatusCode
