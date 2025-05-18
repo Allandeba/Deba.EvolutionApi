@@ -3,12 +3,14 @@ using Deba.EvolutionApi.Interfaces;
 using Deba.EvolutionApi.Models.Requests.ConnectInstance;
 using Deba.EvolutionApi.Models.Requests.CreateInstance;
 using Deba.EvolutionApi.Models.Requests.FetchInstances;
+using Deba.EvolutionApi.Models.Requests.LogoutInstance;
 using Deba.EvolutionApi.Models.Requests.SendText;
 using Deba.EvolutionApi.Models.Responses;
 using Deba.EvolutionApi.Models.Responses.ConnectInstance;
 using Deba.EvolutionApi.Models.Responses.ConnectionState;
 using Deba.EvolutionApi.Models.Responses.CreateInstance;
 using Deba.EvolutionApi.Models.Responses.FetchInstances;
+using Deba.EvolutionApi.Models.Responses.LogoutInstance;
 using Deba.EvolutionApi.Models.Responses.SendText;
 
 namespace Deba.EvolutionApi.Services;
@@ -20,6 +22,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
     private static string _fetchInstancesPath = "instance/fetchInstances{0}";
     private static string _createInstancePath = "instance/create";
     private static string _connectInstancePath = "instance/connect/{0}";
+    private static string _logoutInstancePath = "/instance/logout/{0}";
 
     public async Task<Response<SendTextResponse?>> SendTextAsync(string instanceName, SendTextRequest request)
     {
@@ -113,6 +116,23 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
         catch (Exception ex)
         {
             return new Response<ConnectInstanceResponse?>(null, 500, $"Erro não esperado ao conectar com a instancia: {ex.Message}", ex.InnerException?.Message);
+        }
+    }
+
+    public async Task<Response<LogoutInstanceResponse?>> LogoutInstanceAsync(LogoutInstanceRequest request)
+    {
+        try
+        {
+            var path = string.Format(_logoutInstancePath, request.InstanceName);
+            var response = await client.DeleteAsync(path);
+
+            return response.IsSuccessStatusCode
+                    ? new Response<LogoutInstanceResponse?> { Data = await response.Content.ReadFromJsonAsync<LogoutInstanceResponse>() }
+                    : new Response<LogoutInstanceResponse?>(null, 404, "Não foi possível efetuar o logout da instancia", await response.Content.ReadAsStringAsync());
+        }
+        catch (Exception ex)
+        {
+            return new Response<LogoutInstanceResponse?>(null, 500, $"Erro não esperado ao efetuar o logout da instancia: {ex.Message}", ex.InnerException?.Message);
         }
     }
 }
