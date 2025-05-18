@@ -1,9 +1,11 @@
 using System.Net.Http.Json;
 using Deba.EvolutionApi.Interfaces;
+using Deba.EvolutionApi.Models.Requests.ConnectInstance;
 using Deba.EvolutionApi.Models.Requests.CreateInstance;
 using Deba.EvolutionApi.Models.Requests.FetchInstances;
 using Deba.EvolutionApi.Models.Requests.SendText;
 using Deba.EvolutionApi.Models.Responses;
+using Deba.EvolutionApi.Models.Responses.ConnectInstance;
 using Deba.EvolutionApi.Models.Responses.ConnectionState;
 using Deba.EvolutionApi.Models.Responses.CreateInstance;
 using Deba.EvolutionApi.Models.Responses.FetchInstances;
@@ -17,6 +19,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
     private static string _connectionStatePath = "instance/connectionState/{0}";
     private static string _fetchInstancesPath = "instance/fetchInstances{0}";
     private static string _createInstancePath = "instance/create";
+    private static string _connectInstancePath = "instance/connect/{0}";
 
     public async Task<Response<SendTextResponse?>> SendTextAsync(string instanceName, SendTextRequest request)
     {
@@ -93,6 +96,23 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
         catch (Exception ex)
         {
             return new Response<CreateInstanceResponse?>(null, 500, $"Erro não esperado criar instancia: {ex.Message}", ex.InnerException?.Message);
+        }
+    }
+
+    public async Task<Response<ConnectInstanceResponse?>> ConnectInstanceAsync(ConnectInstanceRequest request)
+    {
+        try
+        {
+            var path = string.Format(_connectInstancePath, request.InstanceName);
+            var response = await client.GetAsync(path);
+
+            return response.IsSuccessStatusCode
+                    ? new Response<ConnectInstanceResponse?> { Data = await response.Content.ReadFromJsonAsync<ConnectInstanceResponse>() }
+                    : new Response<ConnectInstanceResponse?>(null, 404, "Não foi possível conectar com a instancia", await response.Content.ReadAsStringAsync());
+        }
+        catch (Exception ex)
+        {
+            return new Response<ConnectInstanceResponse?>(null, 500, $"Erro não esperado ao conectar com a instancia: {ex.Message}", ex.InnerException?.Message);
         }
     }
 }
