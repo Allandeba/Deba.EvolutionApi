@@ -78,7 +78,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
             var response = await client.GetAsync(path);
 
             return response.IsSuccessStatusCode
-                    ? new Response<FetchInstancesResponse?> { Data = await response.Content.ReadFromJsonAsync<FetchInstancesResponse>() }
+                    ? new Response<FetchInstancesResponse?> { Data = new FetchInstancesResponse { Instances = await response.Content.ReadFromJsonAsync<List<FetchInstance>>() } }
                     : new Response<FetchInstancesResponse?>(null, 404, "Não foi possível recuperar instancia(s)", await response.Content.ReadAsStringAsync());
         }
         catch (Exception ex)
