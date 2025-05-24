@@ -47,7 +47,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
         try
         {
             var path = string.Format(_connectionStatePath, request.InstanceName);
-            var response = await client.PostAsync(path, request.ToHttpContent());
+            var response = await client.GetAsync(path);
 
             return response.IsSuccessStatusCode
                     ? new Response<ConnectionStateResponse?> { Data = await response.Content.ReadFromJsonAsync<ConnectionStateResponse>() }
