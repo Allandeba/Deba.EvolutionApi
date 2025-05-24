@@ -1,10 +1,12 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Deba.EvolutionApi.Common;
 using Deba.EvolutionApi.Interfaces;
 using Deba.EvolutionApi.Models.Options;
 using Deba.EvolutionApi.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Deba.EvolutionApi
+namespace Deba.EvolutionApi.Extensions
 {
     public static class DebaEvolutionApiExtensions
     {

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using Deba.EvolutionApi.Extensions;
 using Deba.EvolutionApi.Interfaces;
 using Deba.EvolutionApi.Models.Requests.ConnectInstance;
 using Deba.EvolutionApi.Models.Requests.CreateInstance;
@@ -29,7 +30,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
         try
         {
             var path = string.Format(_sendTextPath, request.InstanceName);
-            var response = await client.PostAsJsonAsync(path, request);
+            var response = await client.PostAsync(path, request.ToHttpContent());
 
             return response.IsSuccessStatusCode
                 ? new Response<SendTextResponse?> { Message = "Mensagem enviada com sucesso" }
@@ -46,15 +47,15 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
         try
         {
             var path = string.Format(_connectionStatePath, request.InstanceName);
-            var response = await client.PostAsJsonAsync(path, request);
+            var response = await client.PostAsync(path, request.ToHttpContent());
 
             return response.IsSuccessStatusCode
                     ? new Response<ConnectionStateResponse?> { Data = await response.Content.ReadFromJsonAsync<ConnectionStateResponse>() }
-                    : new Response<ConnectionStateResponse?>(null, 404, "Não foi possível enviar a mensagem", await response.Content.ReadAsStringAsync());
+                    : new Response<ConnectionStateResponse?>(null, 404, "Não foi encontrado uma conexão para a instancia", await response.Content.ReadAsStringAsync());
         }
         catch (Exception ex)
         {
-            return new Response<ConnectionStateResponse?>(null, 500, $"Erro não esperado ao enviar a mensagem: {ex.Message}", ex.InnerException?.Message);
+            return new Response<ConnectionStateResponse?>(null, 500, $"Erro não esperado ao verificar conexão com a instancia: {ex.Message}", ex.InnerException?.Message);
         }
     }
 
@@ -90,7 +91,7 @@ internal class EvolutionApiService(HttpClient client) : IEvolutionApiService
     {
         try
         {
-            var response = await client.PostAsJsonAsync(_createInstancePath, request);
+            var response = await client.PostAsync(_createInstancePath, request.ToHttpContent());
 
             return response.IsSuccessStatusCode
                     ? new Response<CreateInstanceResponse?> { Data = await response.Content.ReadFromJsonAsync<CreateInstanceResponse>() }
