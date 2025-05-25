@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Deba.EvolutionApi.Models.Requests.CreateInstance;
 
 public class CreateInstanceRequest : Request
@@ -5,7 +7,7 @@ public class CreateInstanceRequest : Request
     public string? InstanceName { get; set; }
     public string? Token { get; set; }
     public string? Number { get; set; }
-    public bool? QrCode { get; set; }
+    [JsonPropertyName("qrcode")] public bool? QrCode { get; set; }
     public string? Integration { get; set; }
     public bool? RejectCall { get; set; }
     public string? MsgCall { get; set; }
